@@ -7,7 +7,7 @@ from io import BytesIO
 app = Flask(__name__)
 
 # Load the trained model
-model = tf.keras.models.load_model('cnn_model-v2.h5')
+model = tf.keras.models.load_model('/Users/mauliana/Documents/Work/GAIA/code/ecg/cnn_model-v2.h5')
 
 # Class from the training process
 classes = [
@@ -46,13 +46,20 @@ def predict():
         predictions = model.predict(preprocessed_image)
         predicted_index = np.argmax(predictions, axis=1)[0]
         predicted_class = classes[predicted_index]
-        confidence_score = predictions[0][predicted_index]
+        
+        # confidence_score = predictions[0][predicted_index]
+        confidence_score = round(predictions[0][predicted_index] * 100, 2)
+
+        class_confidences = {classes[i]: float(predictions[0][i].item()) * 100 for i in range(len(classes))}
+        sorted_confidences = dict(sorted(class_confidences.items(), key=lambda item: item[1], reverse=True))
+        filtered_confidences = {k: v for k, v in sorted_confidences.items() if v >= 10}
         
         # Return the prediction and confidence score
         return jsonify({
             "predicted_class": predicted_class,
-            "confidence_score": float(confidence_score),
-            "confidence_scores": {classes[i]: float(predictions[0][i]) for i in range(len(classes))}
+            "confidence_score": confidence_score,
+            # "confidence_scores": {classes[i]: float(predictions[0][i]) for i in range(len(classes))}
+            "class_confidences": filtered_confidences
         })
 
     except Exception as e:

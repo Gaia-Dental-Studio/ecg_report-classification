@@ -34,11 +34,11 @@ if uploaded_file is not None:
                 # Handle response
                 if response.status_code == 200:
                     data = response.json()
-                    st.write(f"### Predicted Class: {data['predicted_class']}")
-                    st.write(f"### Confidence Score: {data['confidence_score']:.2f}")
-                    st.write("### All Confidence Scores:")
-                    for label, score in data['confidence_scores'].items():
-                        st.write(f"  - {label}: {score:.4f}")
+                    st.success(f"Predicted Class: {data['predicted_class']}")
+                    st.info(f"Confidence Score: {data['confidence_score']:.2f}%")
+                    st.write("Confidence scores for all class above 10%:")
+                    for label, score in data['class_confidences'].items():
+                        st.write(f"  - {label}: {score:.2f}%")
                 else:
                     st.error(f"Error: {response.json().get('error', 'Unknown error')}")
 
