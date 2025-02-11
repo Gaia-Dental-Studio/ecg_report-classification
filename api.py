@@ -7,7 +7,7 @@ from io import BytesIO
 app = Flask(__name__)
 
 # Load the trained model
-model = tf.keras.models.load_model('/Users/mauliana/Documents/Work/GAIA/code/ecg/cnn_model-v2.h5')
+model = tf.keras.models.load_model('model/cnn_model-v2.h5')
 
 # Class from the training process
 classes = [
